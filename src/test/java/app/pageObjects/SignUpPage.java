@@ -1,8 +1,6 @@
 package app.pageObjects;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -67,5 +65,27 @@ public class SignUpPage {
     public void waitForOkButtonToBeVisible() {
         wait = new WebDriverWait(driver, Duration.ofSeconds(3));
         wait.until(ExpectedConditions.visibilityOfElementLocated(okButton));
+    }
+
+    public void waitForRegisterTitleToBeVisible() {
+        wait = new WebDriverWait(driver, Duration.ofSeconds(3));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(registerTitle));
+    }
+
+    public void scrollToTop() {
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("window.scrollTo(0, 0);");
+    }
+
+    public void reloadPage() {
+        driver.navigate().refresh();
+    }
+
+    public boolean isRegisterSuccessMessageVisible() {
+        try{
+            return driver.findElement(registerSuccessMessage).isDisplayed();
+        }catch (NoSuchElementException e){
+            return false;
+        }
     }
 }
