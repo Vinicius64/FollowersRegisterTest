@@ -11,4 +11,9 @@ public class SignUpPage {
         this.driver = driver;
     }
 
+    public void open() {
+        driver.get("https://followers-register.vercel.app");
+    }
+
+
 }
