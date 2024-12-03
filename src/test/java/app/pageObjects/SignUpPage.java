@@ -32,6 +32,27 @@ public class SignUpPage {
 
     public void clickOkButton() { driver.findElement(okButton).click();}
 
+    public void initialPage() {
+        driver.navigate().to("https://followers-register.vercel.app");
+    }
+
+    public void clickRegisterButton() {
+        driver.findElement(registerButton).click();
+    }
+
+    public void fillName(String name) {
+        driver.findElement(nameInput).sendKeys(name);
+    }
+
+    public void selectGender(String gender) {
+        driver.findElement(genderInput).sendKeys(gender);
+    }
+
+    public void fillNivel(String nivel) {
+        driver.findElement(nivelInput).sendKeys(nivel);
+    }
+
+
     public void waitForOkButtonToBeVisible() {
         wait = new WebDriverWait(driver, Duration.ofSeconds(3));
         wait.until(ExpectedConditions.visibilityOfElementLocated(okButton));
