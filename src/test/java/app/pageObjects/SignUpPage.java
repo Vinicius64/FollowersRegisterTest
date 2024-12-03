@@ -19,8 +19,16 @@ public class SignUpPage {
         driver.get("https://followers-register.vercel.app");
     }
 
+    private By registerButton = By.className("register-button");
+    private By nameInput = By.className("register-input");
+    private By genderInput = By.name("gender");
+    private By nivelInput = By.name("nivel");
+    private By listInput = By.linkText("Lista de Seguidores");
     private By okButton = By.cssSelector(".swal2-actions button");
-
+    private By registerSuccessMessage = By.cssSelector(".swal2-success");
+    private By registerTitle = By.className("register-title");
+    private By firstRadioOption = By.xpath("//*[@id=\"root\"]/div/div/div[4]/label[1]");
+    private By selectedImageOption = By.xpath("//*[@id=\"root\"]/div/div/div[5]/div/div/div[5]/div/div/img");
 
     public void clickOkButton() { driver.findElement(okButton).click();}
 
