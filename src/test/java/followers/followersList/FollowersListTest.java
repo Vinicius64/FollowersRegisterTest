@@ -24,23 +24,35 @@ public class FollowersListTest {
         signUpPage = new SignUpPage(driver);
     }
 
-    @Order(1)
-    @ParameterizedTest
-    @DisplayName("Test simple insert")
-    @CsvSource({
-            "John Doe, Male, 100, true",
-            "Jane Smith, Female, 200, true"
-    })
-    public void testSimpleInsert(String name, String gender, String nivel, boolean expected){
-        try{
-            signUpPage.open();
-            insertData(name, gender, nivel);
-            signUpPage.waitForOkButtonToBeVisible();
-            assertEquals(expected, signUpPage.isRegisterSuccessMessageVisible());
-            clickOkButton();
-        }catch (Error e){
-            clickOkButton();
-            throw new AssertionFailedError("The result is not the expected");
+    @TestClassOrder(ClassOrderer.OrderAnnotation.class)
+    @Nested
+    @DisplayName("All followers list test")
+    class FollowersTest{
+
+        @Order(1)
+        @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+        @Nested
+        @DisplayName("Test the follower insertion and simple interactions on the listing page flow")
+        class TestSimpleFlux{
+            @Order(1)
+            @ParameterizedTest
+            @DisplayName("Test simple insert")
+            @CsvSource({
+                    "John Doe, Male, 100, true",
+                    "Jane Smith, Female, 200, true"
+            })
+            public void testSimpleInsert(String name, String gender, String nivel, boolean expected){
+                try{
+                    signUpPage.open();
+                    insertData(name, gender, nivel);
+                    signUpPage.waitForOkButtonToBeVisible();
+                    assertEquals(expected, signUpPage.isRegisterSuccessMessageVisible());
+                    clickOkButton();
+                }catch (Error e){
+                    clickOkButton();
+                    throw new AssertionFailedError("The result is not the expected");
+                }
+            }
         }
     }
 
