@@ -207,6 +207,35 @@ public class SignUpFollowersTest {
         }
     }
 
+    @ParameterizedTest
+    @DisplayName("Test to generate multiple follorwers data and large name")
+    @MethodSource("generateMultipleFollowersDataAndLargeName")
+    public void testToGenerateMultipleFollowersDataAndLargeName(String name, String gender, String nivel) {
+        insertData(name, gender, nivel);
+        signUpPage.waitForOkButtonToBeVisible();
+        signUpPage.clickOkButton();
+        signUpPage.waitForRegisterTitleToBeVisible();
+        signUpPage.reloadPage();
+        insertData(name, gender, nivel);
+        try {
+            assertFalse(signUpPage.isRegisterSuccessMessageVisible());
+            clickOkButton();
+        }catch (Error e){
+            clickOkButton();
+            throw new AssertionFailedError("The result is not the expected");
+        }
+    }
+
+    public static Stream<Arguments> generateMultipleFollowersDataAndLargeName() {
+        String name = "Duplicate User ".repeat(10) + "SomeExtraLongName";
+        String gender = "Male";
+        String nivel = "500";
+
+        return Stream.of(
+                Arguments.of(name, gender, nivel)
+        );
+    }
+
 
 
         @ParameterizedTest
