@@ -1,5 +1,6 @@
 package followers.followersList;
 
+import app.pageObjects.ListPage;
 import app.pageObjects.SignUpPage;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
@@ -11,10 +12,12 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.opentest4j.AssertionFailedError;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FollowersListTest {
     private static WebDriver driver;
     private static SignUpPage signUpPage;
+    private static ListPage listPage;
     private WebDriverWait wait;
 
     @BeforeAll
@@ -51,6 +54,21 @@ public class FollowersListTest {
                 }catch (Error e){
                     clickOkButton();
                     throw new AssertionFailedError("The result is not the expected");
+                }
+            }
+
+            @Order(2)
+            @Test
+            @DisplayName("Test whether followers are listed correctly")
+            public void testListingCorrectly(){
+                try {
+                    signUpPage.listFollowers();
+                    listPage = new ListPage(driver);
+
+                    assertTrue(listPage.verifyFollowerInList("John Doe", "Male", "100"));
+                    assertTrue(listPage.verifyFollowerInList("Jane Smith", "Female", "200"));
+                }catch (Exception e){
+                    throw new AssertionFailedError("Error during follower listing verification", e);
                 }
             }
         }
