@@ -228,9 +228,11 @@ public class SignUpFollowersTest {
     }
 
 
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
     @Nested
     @DisplayName("Tests for insert same datas")
     class TestsForInsertSameDatas {
+        @Order(1)
         @ParameterizedTest
         @DisplayName("Test to check if it is possible to insert a follower with the same data as another follower")
         @MethodSource("generateDuplicateData")
@@ -245,10 +247,22 @@ public class SignUpFollowersTest {
                 insertData(name, gender, nivel);
                 assertFalse(signUpPage.isRegisterSuccessMessageVisible());
                 clickOkButton();
-            } catch (Error e) {
+            }catch (Error e){
                 clickOkButton();
                 throw new AssertionFailedError("The result is not the expected");
             }
+        }
+
+        @Order(2)
+        @ParameterizedTest
+        @DisplayName("Verify if the follower with the same data as another follower is not in the list")
+        @MethodSource("generateDuplicateData")
+        public void testIfFollowersNotAreBeingInsertedWithDuplicateData(String name, String gender, String nivel) {
+            signUpPage.scrollToBottom();
+            signUpPage.waitForListOfFollowersToBeVisible();
+            signUpPage.listFollowers();
+            ListPage listPage = new ListPage(driver);
+            Boolean exist = listPage.verifyDuplicatedFollowerInList(name, gender, nivel);
         }
 
         public static Stream<Arguments> generateDuplicateData() {
