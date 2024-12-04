@@ -61,10 +61,17 @@ public class SignUpPage {
         radioButton.click();
     }
 
+    public void listFollowers(){ driver.findElement(listInput).click(); }
+
 
     public void waitForOkButtonToBeVisible() {
         wait = new WebDriverWait(driver, Duration.ofSeconds(3));
         wait.until(ExpectedConditions.visibilityOfElementLocated(okButton));
+    }
+
+    public void waitForListOfFollowersToBeVisible() {
+        wait = new WebDriverWait(driver, Duration.ofSeconds(3));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(listInput));
     }
 
     public void waitForRegisterTitleToBeVisible() {
@@ -75,6 +82,11 @@ public class SignUpPage {
     public void scrollToTop() {
         JavascriptExecutor js = (JavascriptExecutor) driver;
         js.executeScript("window.scrollTo(0, 0);");
+    }
+
+    public void scrollToBottom() {
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("window.scrollTo(0, document.body.scrollHeight);");
     }
 
     public void reloadPage() {
