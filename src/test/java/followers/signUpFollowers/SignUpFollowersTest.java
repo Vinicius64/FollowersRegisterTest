@@ -173,6 +173,41 @@ public class SignUpFollowersTest {
     }
 
 
+    @Nested
+    @DisplayName("Tests for insert same datas")
+    class TestsForInsertSameDatas {
+        @ParameterizedTest
+        @DisplayName("Test to check if it is possible to insert a follower with the same data as another follower")
+        @MethodSource("generateDuplicateData")
+        public void testToCheckIfItIsPossibleToInsertFollowerWithTheSameDataAsAnotherFollower(String name, String gender, String nivel) {
+            insertData(name, gender, nivel);
+            signUpPage.waitForOkButtonToBeVisible();
+            signUpPage.clickOkButton();
+            signUpPage.waitForRegisterTitleToBeVisible();
+            signUpPage.reloadPage();
+
+            try {
+                insertData(name, gender, nivel);
+                assertFalse(signUpPage.isRegisterSuccessMessageVisible());
+                clickOkButton();
+            } catch (Error e) {
+                clickOkButton();
+                throw new AssertionFailedError("The result is not the expected");
+            }
+        }
+
+        public static Stream<Arguments> generateDuplicateData() {
+            String name = "Duplicate User";
+            String gender = "Male";
+            String nivel = "500";
+
+            return Stream.of(
+                    Arguments.of(name, gender, nivel)
+            );
+        }
+    }
+
+
 
         @ParameterizedTest
     @DisplayName("Test with special characters in input fields")
