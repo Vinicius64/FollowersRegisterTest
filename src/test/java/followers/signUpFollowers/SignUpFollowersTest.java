@@ -144,7 +144,37 @@ public class SignUpFollowersTest {
         }
     }
 
-    @ParameterizedTest
+    @Nested
+    @DisplayName("Tests followers with many zeros in nivel")
+    class followersWithManyZeros {
+        public static Stream<Arguments> generateMultipleZerosData() {
+            String name = "Test User";
+            String gender = "Male";
+            String nivel = "00000000000000000000000000000000000000000000000000";
+
+            return Stream.of(
+                    Arguments.of(name, gender, nivel)
+            );
+        }
+
+        @ParameterizedTest
+        @DisplayName("Test to insert many zeros in the 'nivel' field")
+        @MethodSource("generateMultipleZerosData")
+        public void testToInsertManyZerosInNivel(String name, String gender, String nivel) {
+            try {
+                insertData(name, gender, nivel);
+                assertFalse(signUpPage.isRegisterSuccessMessageVisible());
+                clickOkButton();
+            } catch (Error e) {
+                clickOkButton();
+                throw new AssertionFailedError("The result is not the expected");
+            }
+        }
+    }
+
+
+
+        @ParameterizedTest
     @DisplayName("Test with special characters in input fields")
     @MethodSource("generateSpecialCharacterInput")
     public void testFieldWithSpecialCharacters(String name, String gender, String nivel) {
