@@ -184,9 +184,10 @@ public class SignUpFollowersTest {
         }
     }
 
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
     @Nested
     @DisplayName("Tests followers with many zeros in nivel")
-    class followersWithManyZeros {
+    class followersWithManyZeros{
         public static Stream<Arguments> generateMultipleZerosData() {
             String name = "Test User";
             String gender = "Male";
@@ -197,6 +198,7 @@ public class SignUpFollowersTest {
             );
         }
 
+        @Order(1)
         @ParameterizedTest
         @DisplayName("Test to insert many zeros in the 'nivel' field")
         @MethodSource("generateMultipleZerosData")
@@ -205,10 +207,23 @@ public class SignUpFollowersTest {
                 insertData(name, gender, nivel);
                 assertFalse(signUpPage.isRegisterSuccessMessageVisible());
                 clickOkButton();
-            } catch (Error e) {
+            }catch (Error e){
                 clickOkButton();
                 throw new AssertionFailedError("The result is not the expected");
             }
+        }
+
+        @Order(2)
+        @ParameterizedTest
+        @DisplayName("Verify if the follower with many zeros in nivel is not in the list")
+        @MethodSource("generateMultipleZerosData")
+        public void testIfFollowersNotAreBeingInsertedManyZeros(String name, String gender, String nivel) {
+            signUpPage.scrollToBottom();
+            signUpPage.waitForListOfFollowersToBeVisible();
+            signUpPage.listFollowers();
+            ListPage listPage = new ListPage(driver);
+            Boolean exist = listPage.verifyFollowerInList(name, gender, nivel);
+            assertFalse(exist);
         }
     }
 
