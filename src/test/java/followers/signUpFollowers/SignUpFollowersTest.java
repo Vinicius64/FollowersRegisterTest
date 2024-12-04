@@ -4,12 +4,17 @@ import app.pageObjects.SignUpPage;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.opentest4j.AssertionFailedError;
 
+import java.util.stream.Stream;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @DisplayName("Testing the functionality of registering a follower")
 public class SignUpFollowersTest {
@@ -59,6 +64,30 @@ public class SignUpFollowersTest {
                 throw new AssertionFailedError("The result is not the expected");
             }
 
+        }
+    }
+
+    @Nested
+    @DisplayName("Tests followers with negative numbers")
+    class followersWithNegativeNumbers {
+        public static Stream<Arguments> testFieldFillFunctionality() {
+            return Stream.of(
+                    Arguments.of("Maria DB", "123", String.valueOf(-321))
+            );
+        }
+
+        @ParameterizedTest
+        @DisplayName("Test to insert follower with negative number")
+        @MethodSource("testFieldFillFunctionality")
+        public void testFieldFillFunctionalityWithNegativeNumber(String name, String gender, String nivel) {
+            try {
+                insertData(name, gender, nivel);
+                assertFalse(signUpPage.isRegisterSuccessMessageVisible());
+                clickOkButton();
+            } catch (Error e) {
+                clickOkButton();
+                throw new AssertionFailedError("The result is not the expected");
+            }
         }
     }
 
