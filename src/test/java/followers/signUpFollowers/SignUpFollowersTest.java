@@ -34,11 +34,33 @@ public class SignUpFollowersTest {
 
     @Nested
     @DisplayName("Tests for insert followers from csv")
-    class insertFollowersCsv{
+    class insertFollowersCsv {
+        @ParameterizedTest
+        @DisplayName("Test with dynamic data sets")
+        @CsvSource({
+                "John Doe, Male, 100, true",
+                "Jane Smith, Female, 200, true",
+                "Alex Johnson, Other,12, true",
+                "'', Male, 100, false",
+                "Lucas, '', 100, false",
+                "Laura, Male, '', false",
+                "' ', Female, 200, false",
+                "Lisa Simpsom, ' ', 120, false"
+        })
 
+        public void testFieldFillFunctionalityWithCsv(String name, String gender, String nivel, boolean expected) {
+            try {
+                insertData(name, gender, nivel);
+                signUpPage.waitForOkButtonToBeVisible();
+                assertEquals(expected, signUpPage.isRegisterSuccessMessageVisible());
+                clickOkButton();
+            } catch (Error e) {
+                clickOkButton();
+                throw new AssertionFailedError("The result is not the expected");
+            }
+
+        }
     }
-
-
 
     public void insertData(String name, String gender, String nivel) {
         signUpPage.fillName(name);
