@@ -23,6 +23,7 @@ public class FollowersListTest {
     private static WebDriver driver;
     private static SignUpPage signUpPage;
     private static ListPage listPage;
+    private static SignUpPage editPage;
     private WebDriverWait wait;
 
     @BeforeAll
@@ -105,6 +106,43 @@ public class FollowersListTest {
                     throw new AssertionFailedError("Error during test for deleting the first follower", e);
                 }
             }
+
+            @Order(4)
+            @Test
+            @DisplayName("Test editing the first follower without changes with a reload in the middle of the process")
+            public void testEditFirstFollowerNoChangesAndReloadPage(){
+                try {
+                    WebElement firstFollowerCard = listPage.getFirstFollowerCard();
+                    assertNotNull(firstFollowerCard, "There should be at least one follower to edit");
+
+                    WebElement editButton = firstFollowerCard.findElement(By.xpath(".//button[contains(text(),'Editar')]"));
+                    editButton.click();
+
+
+                    editPage = new SignUpPage(driver);
+
+                    editPage.reloadPage();
+
+                    editPage.selectSelectedImageOption();
+                    editPage.selectFirstRadioOption();
+
+                    editPage.clickRegisterButton();
+
+                    editPage.waitForOkButtonToBeVisible();
+                    assertTrue(editPage.isRegisterSuccessMessageVisible());
+                    clickOkEditButton();
+
+                    editPage.scrollToBottom();
+                    editPage.listFollowers();
+
+                }catch (Error e){
+                    clickOkEditButton();
+
+                    editPage.scrollToBottom();
+                    editPage.listFollowers();
+                    throw new AssertionError("The result is not the expected");
+                }
+            }
         }
     }
 
@@ -123,6 +161,14 @@ public class FollowersListTest {
         signUpPage.waitForRegisterTitleToBeVisible();
         signUpPage.scrollToTop();
         signUpPage.reloadPage();
+    }
+
+    private void clickOkEditButton() {
+        editPage.waitForOkButtonToBeVisible();
+        editPage.clickOkButton();
+        editPage.waitForRegisterTitleToBeVisible();
+        editPage.scrollToTop();
+        editPage.reloadPage();
     }
 
     private void closeModalIfPresent() {
