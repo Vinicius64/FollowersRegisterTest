@@ -40,6 +40,16 @@ public class ListPage {
         }else return false;
     }
 
+    public WebElement getFirstFollowerCard() {
+        List<WebElement> cards = driver.findElements(By.className("card-modal"));
+        return cards.isEmpty() ? null : cards.get(0);
+    }
+
+    public void refreshFollowersList() {
+        followers.clear();
+        loadFollowers();
+    }
+
     private void loadFollowers(){
         List<WebElement> followerElements = driver.findElements(By.className("card-modal"));
         for (WebElement element : followerElements) {
