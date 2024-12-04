@@ -91,6 +91,32 @@ public class SignUpFollowersTest {
         }
     }
 
+    @Nested
+    @DisplayName("Test followers with large numbers")
+    class followersWithLargeNumbers {
+        public static Stream<Arguments> generateExtremeNumbers() {
+            return Stream.of(
+                    Arguments.of("1234567890123456789012345678901234567890")
+            );
+        }
+
+        @ParameterizedTest
+        @DisplayName("Test with extremely large numbers")
+        @MethodSource("generateExtremeNumbers")
+        public void testFieldFillWithExtremeNumbers(String largeNumber) {
+            try {
+                insertData(largeNumber, "male", largeNumber);
+                assertFalse(signUpPage.isRegisterSuccessMessageVisible());
+                clickOkButton();
+            } catch (Error e) {
+                clickOkButton();
+                throw new AssertionFailedError("The result is not the expected");
+            }
+
+
+        }
+    }
+
     public void insertData(String name, String gender, String nivel) {
         signUpPage.fillName(name);
         signUpPage.selectGender(gender);
