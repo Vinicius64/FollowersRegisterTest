@@ -23,4 +23,12 @@ public class SignUpFollowersTest {
         signUpPage = new SignUpPage(driver);
         signUpPage.open();
     }
+    public void insertData(String name, String gender, String nivel) {
+        signUpPage.fillName(name);
+        signUpPage.selectGender(gender);
+        signUpPage.fillNivel(nivel);
+        signUpPage.selectFirstRadioOption();
+        signUpPage.selectSelectedImageOption();
+        signUpPage.clickRegisterButton();
+    }
 }
