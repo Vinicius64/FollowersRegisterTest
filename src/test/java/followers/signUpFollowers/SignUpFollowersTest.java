@@ -16,6 +16,14 @@ public class SignUpFollowersTest {
     private static WebDriver driver;
     private static SignUpPage signUpPage;
 
+    public void clickOkButton() {
+        signUpPage.waitForOkButtonToBeVisible();
+        signUpPage.clickOkButton();
+        signUpPage.waitForRegisterTitleToBeVisible();
+        signUpPage.scrollToTop();
+        signUpPage.reloadPage();
+    }
+
     @BeforeAll
     public static void setUp(){
         WebDriverManager.chromedriver().setup();
@@ -23,6 +31,15 @@ public class SignUpFollowersTest {
         signUpPage = new SignUpPage(driver);
         signUpPage.open();
     }
+
+    @Nested
+    @DisplayName("Tests for insert followers from csv")
+    class insertFollowersCsv{
+
+    }
+
+
+
     public void insertData(String name, String gender, String nivel) {
         signUpPage.fillName(name);
         signUpPage.selectGender(gender);
