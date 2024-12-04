@@ -264,6 +264,28 @@ public class FollowersListTest {
                 }
             }
         }
+
+        @Order(3)
+        @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+        @Nested
+        @DisplayName("Test alternative flow")
+        class TestAlternativeFlux{
+            @Order(1)
+            @Test
+            @DisplayName("Test a simple refresh of followers list page")
+            public void testSimpleRefresh() {
+                WebElement listTitle;
+                try {
+                    listTitle = driver.findElement(By.xpath(".//button[contains(text(),'Editar')]"));
+                } catch (NoSuchElementException e) {
+                    listTitle = null;
+                }
+
+                listPage.reloadPage();
+                assertNotNull(listTitle);
+                assertTrue(listTitle.isDisplayed());
+            }
+        }
     }
 
     private void insertData(String name, String gender, String nivel) {
