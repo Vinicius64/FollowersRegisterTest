@@ -1,5 +1,6 @@
 package followers.signUpFollowers;
 
+import app.pageObjects.ListPage;
 import app.pageObjects.SignUpPage;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
@@ -36,9 +37,11 @@ public class SignUpFollowersTest {
         signUpPage.open();
     }
 
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
     @Nested
     @DisplayName("Tests for insert followers from csv")
     class insertFollowersCsv {
+        @Order(1)
         @ParameterizedTest
         @DisplayName("Test with dynamic data sets")
         @CsvSource({
@@ -63,6 +66,28 @@ public class SignUpFollowersTest {
                 throw new AssertionFailedError("The result is not the expected");
             }
 
+        }
+        @Order(2)
+        @ParameterizedTest
+        @DisplayName("Test if followers are being inserted correctly")
+        @CsvSource({
+                "John Doe, Male, 100, true",
+                "Jane Smith, Female, 200, true",
+                "Alex Johnson, Other,12, true",
+                "'', Male, 100, false",
+                "Lucas, '', 100, false",
+                "Laura, Male, '', false",
+                "' ', Female, 200, false",
+                "Lisa Simpsom, ' ', 120, false"
+        })
+
+        public void testIfFollowersAreBeingInsertedCorrectly(String name, String gender, String nivel, boolean expected) {
+            signUpPage.scrollToBottom();
+            signUpPage.waitForListOfFollowersToBeVisible();
+            signUpPage.listFollowers();
+            ListPage listPage = new ListPage(driver);
+            Boolean exist = listPage.verifyFollowerInList(name,gender,nivel);
+            assertEquals(expected,exist);
         }
     }
 
