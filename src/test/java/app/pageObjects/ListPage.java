@@ -45,6 +45,22 @@ public class ListPage {
         return cards.isEmpty() ? null : cards.get(0);
     }
 
+    public WebElement getFollowerCard(String name, String gender, String nivel) {
+        List<WebElement> followerElements = driver.findElements(By.className("card-modal"));
+        for (WebElement element : followerElements) {
+            String cardName = element.findElement(By.className("card-header")).getText().trim();
+            String cardGender = element.findElement(By.xpath(".//p[strong[text()='Gênero:']]"))
+                    .getText().replace("Gênero: ", "").trim();
+            String cardNivel = element.findElement(By.xpath(".//p[strong[text()='Nível de Devoção:']]"))
+                    .getText().replace("Nível de Devoção: ", "").trim();
+
+            if (cardName.equals(name) && cardGender.equals(gender) && cardNivel.equals(nivel)) {
+                return element;
+            }
+        }
+        throw new AssertionError("Follower card not found for the given data");
+    }
+
     public void refreshFollowersList() {
         followers.clear();
         loadFollowers();

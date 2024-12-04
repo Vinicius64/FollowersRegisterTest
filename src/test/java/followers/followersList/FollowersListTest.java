@@ -6,10 +6,7 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -211,6 +208,59 @@ public class FollowersListTest {
                     editPage.scrollToBottom();
                     editPage.listFollowers();
                     throw new AssertionError("The result is not the expected");
+                }
+            }
+        }
+
+        @Order(2)
+        @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+        @Nested
+        @DisplayName("Test insert with long parameters")
+        class TestLongInsert{
+
+            @Order(1)
+            @Test
+            @DisplayName("Test inserting long strings and verify Edit/Delete buttons visibility")
+            public void testLongStringsAndButtonsVisibility() {
+                String longName = "JohnDoe".repeat(50);
+                String longGender = "Male".repeat(50);
+                String nivel = "100";
+
+                try {
+                    signUpPage.open();
+                    insertData(longName, longGender, nivel);
+                    signUpPage.waitForOkButtonToBeVisible();
+                    assertTrue(signUpPage.isRegisterSuccessMessageVisible(), "Registration should be successful with long strings");
+                    clickOkButton();
+
+                    signUpPage.listFollowers();
+
+                    WebElement followerCard = listPage.getFollowerCard(longName, longGender, nivel);
+                    WebElement editButton;
+                    WebElement deleteButton;
+
+                    try {
+                        editButton = followerCard.findElement(By.xpath(".//button[contains(text(),'Editar')]"));
+                    } catch (NoSuchElementException e) {
+                        editButton = null;
+                    }
+
+                    try {
+                        deleteButton = followerCard.findElement(By.xpath(".//button[contains(text(),'Excluir')]"));
+                    } catch (NoSuchElementException e) {
+                        deleteButton = null;
+                    }
+
+                    assertNotNull(deleteButton, "Delete button should exist the follower");
+                    assertTrue(deleteButton.isDisplayed(), "Delete button should be visible for the follower");
+
+                    assertNotNull(editButton, "Edit button should exist for the follower");
+                    assertTrue(editButton.isDisplayed(), "Edit button should be visible for the follower");
+
+
+                } catch (Exception e) {
+                    signUpPage.listFollowers();
+                    throw new AssertionFailedError("Error during test for long strings and button visibility", e);
                 }
             }
         }
