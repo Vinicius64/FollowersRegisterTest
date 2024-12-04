@@ -13,8 +13,7 @@ import org.opentest4j.AssertionFailedError;
 
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Testing the functionality of registering a follower")
 public class SignUpFollowersTest {
@@ -115,6 +114,31 @@ public class SignUpFollowersTest {
 
 
         }
+    }
+
+    @ParameterizedTest
+    @DisplayName("Test with special characters in input fields")
+    @MethodSource("generateSpecialCharacterInput")
+    public void testFieldWithSpecialCharacters(String name, String gender, String nivel) {
+        try{
+            insertData(name, gender, nivel);
+            assertTrue(signUpPage.isRegisterSuccessMessageVisible());
+            clickOkButton();
+        }catch (Error e){
+            clickOkButton();
+            throw new AssertionFailedError("The result is not the expected");
+        }
+    }
+
+
+    public static Stream<Arguments> generateSpecialCharacterInput() {
+        String name = "John@Doe!#";
+        String gender = "@Male%";
+        String nivel = "999";
+
+        return Stream.of(
+                Arguments.of(name, gender, nivel)
+        );
     }
 
     public void insertData(String name, String gender, String nivel) {
