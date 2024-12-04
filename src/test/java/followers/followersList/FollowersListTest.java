@@ -143,6 +143,76 @@ public class FollowersListTest {
                     throw new AssertionError("The result is not the expected");
                 }
             }
+
+            @Order(5)
+            @Test
+            @DisplayName("Test editing the first follower")
+            public void testEditFirstFollower(){
+                try {
+                    String name = "Anne Harris";
+                    String gender = " Other";
+                    String nivel = "2000";
+
+                    WebElement firstFollowerCard = listPage.getFirstFollowerCard();
+                    assertNotNull(firstFollowerCard, "There should be at least one follower to edit");
+
+                    WebElement editButton = firstFollowerCard.findElement(By.xpath(".//button[contains(text(),'Editar')]"));
+                    editButton.click();
+
+                    editPage = new SignUpPage(driver);
+                    editPage.clearFields();
+                    insertData(name,gender,nivel);
+
+                    editPage.waitForOkButtonToBeVisible();
+                    assertTrue(editPage.isRegisterSuccessMessageVisible());
+                    clickOkEditButton();
+
+                    editPage.scrollToBottom();
+                    editPage.listFollowers();
+
+                }catch (Error e){
+                    clickOkEditButton();
+
+                    editPage.scrollToBottom();
+                    editPage.listFollowers();
+                    throw new AssertionError("The result is not the expected");
+                }
+            }
+
+            @Order(6)
+            @Test
+            @DisplayName("Test editing the first follower with blank name")
+            public void testEditWithBlankName(){
+                try {
+                    String name = "  ";
+                    String gender = " Any";
+                    String nivel = "5000";
+
+                    WebElement firstFollowerCard = listPage.getFirstFollowerCard();
+                    assertNotNull(firstFollowerCard, "There should be at least one follower to edit");
+
+                    WebElement editButton = firstFollowerCard.findElement(By.xpath(".//button[contains(text(),'Editar')]"));
+                    editButton.click();
+
+                    editPage = new SignUpPage(driver);
+                    editPage.clearFields();
+                    insertData(name,gender,nivel);
+
+                    editPage.waitForOkButtonToBeVisible();
+                    assertFalse(editPage.isRegisterSuccessMessageVisible());
+                    clickOkEditButton();
+
+                    editPage.scrollToBottom();
+                    editPage.listFollowers();
+
+                }catch (Error e){
+                    clickOkEditButton();
+
+                    editPage.scrollToBottom();
+                    editPage.listFollowers();
+                    throw new AssertionError("The result is not the expected");
+                }
+            }
         }
     }
 

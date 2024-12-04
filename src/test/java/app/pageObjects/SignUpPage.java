@@ -61,6 +61,12 @@ public class SignUpPage {
         radioButton.click();
     }
 
+    public void clearFields() {
+        driver.findElement(nameInput).clear();
+        driver.findElement(genderInput).clear();
+        driver.findElement(nivelInput).clear();
+    }
+
     public void listFollowers(){ driver.findElement(listInput).click(); }
 
 
