@@ -18,6 +18,10 @@ public class ListPage {
         loadFollowers();
     }
 
+    public void reloadPage() {
+        driver.navigate().refresh();
+    }
+
     public boolean verifyFollowerInList(String name, String gender, String nivel) {
         for (Follower follower : followers) {
             if (follower.matches(name.trim(), gender.trim(), nivel.trim())) {
