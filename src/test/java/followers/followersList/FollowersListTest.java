@@ -6,13 +6,18 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.opentest4j.AssertionFailedError;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.time.Duration;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class FollowersListTest {
     private static WebDriver driver;
@@ -71,6 +76,35 @@ public class FollowersListTest {
                     throw new AssertionFailedError("Error during follower listing verification", e);
                 }
             }
+
+            @Order(3)
+            @Test
+            @DisplayName("Test deleting the first follower")
+            public void testDeleteFirstFollower() {
+                try {
+
+                    WebElement firstFollowerCard = listPage.getFirstFollowerCard();
+                    assertNotNull(firstFollowerCard, "There should be at least one follower to delete");
+
+                    String name = firstFollowerCard.findElement(By.className("card-header")).getText().trim();
+                    String gender = firstFollowerCard.findElement(By.xpath(".//p[strong[text()='Gênero:']]"))
+                            .getText().replace("Gênero: ", "").trim();
+                    String nivel = firstFollowerCard.findElement(By.xpath(".//p[strong[text()='Nível de Devoção:']]"))
+                            .getText().replace("Nível de Devoção: ", "").trim();
+
+                    WebElement deleteButton = firstFollowerCard.findElement(By.xpath(".//button[contains(text(),'Excluir')]"));
+                    assertNotNull(deleteButton, "Delete button should be visible for the first follower");
+
+                    deleteButton.click();
+                    closeModalIfPresent();
+
+                    listPage.refreshFollowersList();
+                    assertFalse(listPage.verifyFollowerInList(name, gender, nivel), "Follower should be deleted from the list");
+
+                } catch (AssertionError | Exception e) {
+                    throw new AssertionFailedError("Error during test for deleting the first follower", e);
+                }
+            }
         }
     }
 
@@ -89,6 +123,20 @@ public class FollowersListTest {
         signUpPage.waitForRegisterTitleToBeVisible();
         signUpPage.scrollToTop();
         signUpPage.reloadPage();
+    }
+
+    private void closeModalIfPresent() {
+        try {
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            WebElement modal = wait.until(ExpectedConditions.presenceOfElementLocated(By.className("swal2-container")));
+            if (modal.isDisplayed()) {
+                WebElement okButton = modal.findElement(By.xpath(".//button[contains(text(),'OK')]"));
+                okButton.click();
+                wait.until(ExpectedConditions.invisibilityOf(modal));
+            }
+        } catch (TimeoutException e) {
+            // No modal present, continue execution
+        }
     }
 
 }
