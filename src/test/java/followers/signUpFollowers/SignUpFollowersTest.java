@@ -116,6 +116,34 @@ public class SignUpFollowersTest {
         }
     }
 
+    @Nested
+    @DisplayName("Tests followers with decimal numbers")
+    class followersWithDecimalNumbers {
+        public static Stream<Arguments> generateLargeDecimalInput() {
+            String name = "John Doe";
+            String gender = "Male";
+            String nivel = "99999999999999999999999999999999.123456";
+
+            return Stream.of(
+                    Arguments.of(name, gender, nivel)
+            );
+        }
+
+        @ParameterizedTest
+        @DisplayName("Test with very large or decimal numbers")
+        @MethodSource("generateLargeDecimalInput")
+        public void testFieldWithLargeOrDecimalNumber(String name, String gender, String nivel) {
+            try {
+                insertData(name, gender, nivel);
+                assertFalse(signUpPage.isRegisterSuccessMessageVisible());
+                clickOkButton();
+            } catch (Error e) {
+                clickOkButton();
+                throw new AssertionFailedError("The result is not the expected");
+            }
+        }
+    }
+
     @ParameterizedTest
     @DisplayName("Test with special characters in input fields")
     @MethodSource("generateSpecialCharacterInput")
