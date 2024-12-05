@@ -2,6 +2,7 @@ package followers.signUpFollowers;
 
 import app.pageObjects.ListPage;
 import app.pageObjects.SignUpPage;
+import com.github.javafaker.Faker;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,6 +21,12 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SignUpFollowersTest {
     private static WebDriver driver;
     private static SignUpPage signUpPage;
+    private static Faker faker;
+
+    @BeforeAll
+    public static void initFaker() {
+        faker = new Faker();
+    }
 
     public void clickOkButton() {
         signUpPage.waitForOkButtonToBeVisible();
@@ -27,6 +34,11 @@ public class SignUpFollowersTest {
         signUpPage.waitForRegisterTitleToBeVisible();
         signUpPage.scrollToTop();
         signUpPage.reloadPage();
+    }
+
+    @BeforeEach
+    public void reloadPage(){
+        signUpPage.initialPage();
     }
 
     @BeforeAll
@@ -323,8 +335,8 @@ public class SignUpFollowersTest {
 
 
     public static Stream<Arguments> generateSpecialCharacterInput() {
-        String name = "John@Doe!#";
-        String gender = "@Male%";
+        String name = faker.regexify("[A-Za-z0-9@!#]{10}");
+        String gender = faker.regexify("[A-Za-z@%]{5}");
         String nivel = "999";
 
         return Stream.of(
